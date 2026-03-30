@@ -33,14 +33,19 @@ jobs:
         run: |
           uv run python github_leaderboard.py \
             --assignments assignments.txt \
-            --output leaderboard.csv \
-            --output-repo repo_breakdown.csv
+            --output docs/leaderboard.csv \
+            --output-repo docs/repo_breakdown.csv
+
+      - name: Copy dashboard CSV files to repository root
+        run: |
+          cp docs/leaderboard.csv leaderboard.csv
+          cp docs/repo_breakdown.csv repo_breakdown.csv
 
       - name: Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add leaderboard.csv repo_breakdown.csv
+          git add docs/leaderboard.csv docs/repo_breakdown.csv leaderboard.csv repo_breakdown.csv
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0

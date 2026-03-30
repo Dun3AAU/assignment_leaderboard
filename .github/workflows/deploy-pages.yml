@@ -36,8 +36,8 @@ jobs:
           cp docs/index.html _site/index.html
           cp docs/styles.css _site/styles.css
           cp docs/app.js _site/app.js
-          cp leaderboard.csv _site/leaderboard.csv
-          cp repo_breakdown.csv _site/repo_breakdown.csv
+          cp docs/leaderboard.csv _site/leaderboard.csv
+          cp docs/repo_breakdown.csv _site/repo_breakdown.csv
           touch _site/.nojekyll
 
       - name: Upload Pages artifact

@@ -16,8 +16,10 @@ The aggregate leaderboard always includes all listed participants. Participants 
 
 - `assignments.txt`: participant names and repository URLs
 - `github_leaderboard.py`: data collection and aggregation script
-- `leaderboard.csv`: aggregated leaderboard output
-- `repo_breakdown.csv`: per-repository contributor breakdown
+- `docs/leaderboard.csv`: dashboard leaderboard data source
+- `docs/repo_breakdown.csv`: dashboard repo breakdown data source
+- `leaderboard.csv`: mirrored aggregate output at repository root
+- `repo_breakdown.csv`: mirrored repo breakdown output at repository root
 - `docs/`: static dashboard source files for GitHub Pages
 - `.github/workflows/leaderboard.yml`: scheduled data refresh workflow
 - `.github/workflows/deploy-pages.yml`: Pages deployment workflow
@@ -84,7 +86,8 @@ Schedule: 07:00, 12:00, 17:00, and 22:00 UTC daily.
 
 This workflow:
 - Syncs dependencies with uv
-- Regenerates `leaderboard.csv` and `repo_breakdown.csv`
+- Regenerates `docs/leaderboard.csv` and `docs/repo_breakdown.csv`
+- Mirrors CSV outputs to repository root for non-dashboard consumers
 - Commits and pushes updated CSV files when data changes
 
 ### GitHub Pages Deployment
