@@ -154,20 +154,39 @@ function renderTable(tableId, rows, columns) {
   }).join("");
 }
 
-async function loadCsv(path) {
-  const response = await fetch(path, { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`Failed to load ${path}`);
+async function loadCsv(paths) {
+  const candidates = Array.isArray(paths) ? paths : [paths];
+  const attempted = [];
+
+  for (const path of candidates) {
+    attempted.push(path);
+    try {
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) {
+        continue;
+      }
+      const text = await response.text();
+      return parseCsv(text);
+    } catch (_error) {
+      // Keep trying other paths.
+    }
   }
-  const text = await response.text();
-  return parseCsv(text);
+
+  throw new Error(`Failed to load CSV. Tried: ${attempted.join(", ")}`);
 }
 
 (async function init() {
   try {
+    if (window.location.protocol === "file:") {
+      throw new Error(
+        "This page is opened via file://. Most browsers block CSV fetches in this mode. " +
+        "Run a local server and open http://localhost:8000/docs/index.html instead."
+      );
+    }
+
     const [overallRaw, repoRaw] = await Promise.all([
-      loadCsv("leaderboard.csv"),
-      loadCsv("repo_breakdown.csv"),
+      loadCsv(["leaderboard.csv", "../leaderboard.csv"]),
+      loadCsv(["repo_breakdown.csv", "../repo_breakdown.csv"]),
     ]);
 
     const overallBase = rankRows(overallRaw.map((row) => ({
@@ -274,6 +293,7 @@ async function loadCsv(path) {
     const message = document.createElement("p");
     message.textContent = `Could not load leaderboard data: ${error.message}`;
     message.style.color = "#ffd6a0";
+    message.style.maxWidth = "70ch";
     hero.appendChild(message);
   }
 }());

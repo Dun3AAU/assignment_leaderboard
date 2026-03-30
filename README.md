@@ -1,86 +1,112 @@
-# Assignment Leaderboard Collector
+# Assignment Leaderboard
 
-This project builds a leaderboard of cross-repo contributions using GitHub pull request data.
+A small data pipeline that aggregates cross-repository GitHub contribution activity into CSV outputs and publishes a GitHub Pages dashboard.
 
-It reads repositories from `assignments.txt`, then for each repo:
-- Fetches pull requests
-- Excludes PRs authored by the repository owner ("everyone else" rule)
-- Counts only PRs authored by people listed in `assignments.txt`
-- Counts total PRs and merged PRs
-- Sums added/deleted lines from PR metadata
+## What It Tracks
 
-The aggregate leaderboard always includes every listed participant. If someone has no qualifying contributions, their row is still included with zeroes.
+For each repository listed in `assignments.txt`, the collector:
+- Reads all pull requests
+- Excludes PRs authored by the repository owner
+- Includes only PRs authored by participants listed in `assignments.txt`
+- Aggregates PR counts and changed lines (additions/deletions)
 
-## Files
+The aggregate leaderboard always includes all listed participants. Participants with no qualifying contributions are included with zero values.
 
-- `assignments.txt`: input list of participant + GitHub URL
-- `github_leaderboard.py`: data collection script
-- `leaderboard.csv`: generated aggregate leaderboard (created after running)
-- `repo_breakdown.csv`: generated per-repository breakdown (created after running)
+## Repository Layout
+
+- `assignments.txt`: participant names and repository URLs
+- `github_leaderboard.py`: data collection and aggregation script
+- `leaderboard.csv`: aggregated leaderboard output
+- `repo_breakdown.csv`: per-repository contributor breakdown
+- `docs/`: static dashboard source files for GitHub Pages
+- `.github/workflows/leaderboard.yml`: scheduled data refresh workflow
+- `.github/workflows/deploy-pages.yml`: Pages deployment workflow
 
 ## Input Format
 
-Each line in `assignments.txt` should look like this:
-
-Name<two or more spaces>GitHub URL
+Each line in `assignments.txt` should contain a display name and a GitHub URL.
 
 Example:
 
-Jane Doe    https://github.com/janedoe/my-repo
+```text
+Jane Doe    https://github.com/janedoe/project-repo
+```
 
-The URL can include extra path segments (like `/tree/main`); the script still extracts owner/repo correctly.
+URLs with additional path segments (for example `/tree/main`) are supported.
 
-## GitHub Token
+## Setup
 
-Use a Personal Access Token to avoid strict rate limits.
-
-Install dependencies with `uv`:
+Install dependencies with uv:
 
 ```powershell
 uv sync
 ```
 
-PowerShell example:
-
-```powershell
-$env:GITHUB_TOKEN = "ghp_your_token_here"
-```
-
-Or place it in a `.env` file in this folder:
+Create a `.env` file in the project root:
 
 ```dotenv
-GITHUB_TOKEN=ghp_your_token_here
+GITHUB_TOKEN=ghp_example_token
 ```
 
-For GitHub Actions automation, add a repository secret named `GH_PAT` containing your personal access token.
-
-## Run
-
-From this folder:
+## Run the Collector
 
 ```powershell
 uv run python .\github_leaderboard.py --assignments .\assignments.txt --output .\leaderboard.csv --output-repo .\repo_breakdown.csv
 ```
 
-Optional date filtering (ISO 8601):
+Optional date filtering:
 
 ```powershell
 uv run python .\github_leaderboard.py --since 2026-03-01 --until 2026-03-30T23:59:59Z
 ```
 
+## Dashboard Preview (Local)
+
+Do not open `docs/index.html` directly with `file://`.
+
+Serve the repository from a local HTTP server:
+
+```powershell
+uv run python -m http.server 8000
+```
+
+Then open:
+
+`http://localhost:8000/docs/index.html`
+
 ## Automation
 
-Workflow file: `.github/workflows/leaderboard.yml`
+### Leaderboard Refresh
 
-It runs at 07:00, 12:00, 17:00, and 22:00 UTC daily, regenerates the CSV files, and commits changes back to the repository.
+Workflow: `.github/workflows/leaderboard.yml`
 
-GitHub Pages deployment workflow: `.github/workflows/deploy-pages.yml`
+Schedule: 07:00, 12:00, 17:00, and 22:00 UTC daily.
 
-This workflow runs automatically after `leaderboard.yml` completes successfully (and can also be triggered manually). It publishes a static dashboard page that reads `leaderboard.csv` and `repo_breakdown.csv`.
+This workflow:
+- Syncs dependencies with uv
+- Regenerates `leaderboard.csv` and `repo_breakdown.csv`
+- Commits and pushes updated CSV files when data changes
+
+### GitHub Pages Deployment
+
+Workflow: `.github/workflows/deploy-pages.yml`
+
+Trigger:
+- Runs automatically after a successful run of `Update Leaderboard`
+- Can also be triggered manually
+
+This workflow packages dashboard assets and CSV outputs and deploys them to GitHub Pages.
+
+## Required Repository Secret
+
+Add this Actions secret for scheduled API access:
+
+- `GH_PAT`: Personal Access Token with permissions needed to read repository PR metadata
 
 ## Output Columns
 
-`leaderboard.csv` includes:
+### leaderboard.csv
+
 - `contributor`
 - `prs_total`
 - `prs_merged`
@@ -91,4 +117,21 @@ This workflow runs automatically after `leaderboard.yml` completes successfully 
 - `deletions_merged`
 - `changed_lines_merged`
 
-This gives you flexibility to choose your final ranking metric in your dashboard.
+### repo_breakdown.csv
+
+- `repo_owner`
+- `repo_name`
+- `contributor`
+- `prs_total`
+- `prs_merged`
+- `additions_all`
+- `deletions_all`
+- `changed_lines_all`
+- `additions_merged`
+- `deletions_merged`
+- `changed_lines_merged`
+
+## Security Notes
+
+- Never commit real tokens to version control.
+- Store local credentials in `.env` and CI credentials in GitHub Actions secrets.

@@ -371,7 +371,7 @@ def build_leaderboard(
             if not author:
                 continue
 
-            # Competition asks for contributions from everyone else, not repo owner.
+            # Exclude owner-authored PRs to capture external contributions only.
             if author.lower() == entry.owner.lower():
                 continue
 
