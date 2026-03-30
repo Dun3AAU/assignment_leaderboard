@@ -1,0 +1,24 @@
+Victor Carmona García       https://github.com/viccar02/Weather-forecasts
+Anders Skjødt Sønderby      https://github.com/Anders-sonderby/MLOps_weather
+Alvaro Buendia Tercero      https://github.com/albuter99/weather-mlops-pipeline
+Amalie Hougaard Lang        https://github.com/houlie3/Weather_pipeline
+Praful Shrestha             https://github.com/xprafulx/whether_automation 
+Andreas Klit Jensen         https://github.com/Dun3AAU/M6_Assignment
+Subhash Kumar Mehta         https://github.com/Mehta7408-max/Weather_report_assign.1/tree/feature/github-pages-dashboard
+Daniel Vittrup Hjerresen    https://github.com/dhjerresen/weather_poetry
+Emina Gracanin              https://github.com/eminagracanin-cloud/weather-pipeline-assignment
+Asalun Hye Arnob            https://github.com/Ricendfish/Assignment1-MLOPS-2026
+Anzuman Ara                 https://github.com/anzuman-ara389/weather-pipeline
+Maleha Afzal                https://github.com/malehaafzal10-spec/weather-pipeline
+Suchanya Baiyam             https://github.com/Maximona-Ailee/automated-weather-pipeline
+Signe Søndergaard Dahl      https://github.com/Signe-Dahl/ML_Ops_Assignment
+Karolina Joanna Bohdan      https://github.com/KarolinaBohdan/Weather-pipeline
+Alexander Christiansen      https://github.com/alexchrander/M6_Weekly_Assignment1/tree/main
+Mahesh Gautam               https://github.com/Maxmahesh-byte/weather-poems
+Chenghao Luo                https://github.com/krsoy/BDS-Data-ML
+Anders Geert                https://github.com/Geert98/Assignment-Automated-Weather-Pipeline
+Timo Bertus Rik Philipse    https://github.com/timophilipse/weather_assignment1
+Cristian Andres Antinirre   https://github.com/csmoilis/API_weather_LLM
+Ioannis Chatzikos           https://github.com/yiannisxatzikos2500-design/weather-mlops-pipeline
+Christian Ory Nielsen       https://github.com/Ory999/Automated-Weather-Pipeline-with-GitHub
+Kristjana Prifti            https://github.com/kristiana098/weather-pipeline

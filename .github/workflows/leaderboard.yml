@@ -1,0 +1,49 @@
+name: Update Leaderboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7,12,17,22 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: Sync dependencies
+        run: uv sync --frozen
+
+      - name: Generate leaderboard files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+        run: |
+          uv run python github_leaderboard.py \
+            --assignments assignments.txt \
+            --output leaderboard.csv \
+            --output-repo repo_breakdown.csv
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add leaderboard.csv repo_breakdown.csv
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update leaderboard data"
+          git push

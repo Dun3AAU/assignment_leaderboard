@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contribution Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient"></div>
+  <main class="container">
+    <header class="hero reveal">
+      <p class="kicker">GitHub Competition</p>
+      <h1>Assignment Leaderboard</h1>
+      <p class="subtitle">
+        Cross-repo contribution stats from pull requests. Sorted by impact, with live filtering and column sorting.
+      </p>
+    </header>
+
+    <section class="card reveal delay-1">
+      <h2>Competition Highlights</h2>
+      <div class="stats-grid" id="highlights">
+        <article class="stat-panel">
+          <p class="stat-label">Top Contributor</p>
+          <p class="stat-value" id="topContributor">Loading...</p>
+          <p class="stat-note" id="topContributorNote">-</p>
+        </article>
+        <article class="stat-panel">
+          <p class="stat-label">Repo With Most Changes</p>
+          <p class="stat-value" id="topRepoChanges">Loading...</p>
+          <p class="stat-note" id="topRepoChangesNote">-</p>
+        </article>
+        <article class="stat-panel">
+          <p class="stat-label">Repo With Most PRs</p>
+          <p class="stat-value" id="topRepoPrs">Loading...</p>
+          <p class="stat-note" id="topRepoPrsNote">-</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="card reveal delay-2">
+      <div class="section-header">
+        <h2>Overall Scoreboard</h2>
+        <div class="controls">
+          <input id="overallFilter" type="search" placeholder="Filter contributor..." aria-label="Filter contributor">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="overallTable">
+          <thead>
+            <tr>
+              <th data-key="rank" data-type="number">Rank</th>
+              <th data-key="contributor" data-type="string">Contributor</th>
+              <th data-key="prs_total" data-type="number">PRs</th>
+              <th data-key="prs_merged" data-type="number">Merged PRs</th>
+              <th data-key="changed_lines_all" data-type="number">Changed Lines</th>
+              <th data-key="changed_lines_merged" data-type="number">Changed Lines (Merged)</th>
+              <th data-key="additions_merged" data-type="number">Additions (Merged)</th>
+              <th data-key="deletions_merged" data-type="number">Deletions (Merged)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card reveal delay-3">
+      <div class="section-header">
+        <h2>Repo Breakdown</h2>
+        <div class="controls">
+          <input id="repoFilter" type="search" placeholder="Filter repo or contributor..." aria-label="Filter repo table">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table id="repoTable">
+          <thead>
+            <tr>
+              <th data-key="repo" data-type="string">Repo</th>
+              <th data-key="contributor" data-type="string">Contributor</th>
+              <th data-key="prs_total" data-type="number">PRs</th>
+              <th data-key="prs_merged" data-type="number">Merged PRs</th>
+              <th data-key="changed_lines_all" data-type="number">Changed Lines</th>
+              <th data-key="changed_lines_merged" data-type="number">Changed Lines (Merged)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
