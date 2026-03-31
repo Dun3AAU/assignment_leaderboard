@@ -154,6 +154,93 @@ function renderTable(tableId, rows, columns) {
   }).join("");
 }
 
+function formatUtc(date) {
+  if (!date) {
+    return "Unavailable";
+  }
+  return `${new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "UTC",
+  }).format(date)} UTC`;
+}
+
+function getNextScheduledUtc(now) {
+  const hoursUtc = [7, 12, 17, 22];
+  const current = new Date(now.getTime());
+  current.setUTCSeconds(0, 0);
+
+  for (const hour of hoursUtc) {
+    const candidate = new Date(Date.UTC(
+      current.getUTCFullYear(),
+      current.getUTCMonth(),
+      current.getUTCDate(),
+      hour,
+      0,
+      0,
+      0
+    ));
+    if (candidate > current) {
+      return candidate;
+    }
+  }
+
+  return new Date(Date.UTC(
+    current.getUTCFullYear(),
+    current.getUTCMonth(),
+    current.getUTCDate() + 1,
+    hoursUtc[0],
+    0,
+    0,
+    0
+  ));
+}
+
+async function fetchLastUpdated(paths) {
+  const candidates = Array.isArray(paths) ? paths : [paths];
+  for (const path of candidates) {
+    try {
+      const headResponse = await fetch(path, { method: "HEAD", cache: "no-store" });
+      if (headResponse.ok) {
+        const headModified = headResponse.headers.get("last-modified");
+        if (headModified) {
+          return new Date(headModified);
+        }
+      }
+
+      const response = await fetch(path, { cache: "no-store" });
+      if (!response.ok) {
+        continue;
+      }
+      const lastModified = response.headers.get("last-modified");
+      if (lastModified) {
+        return new Date(lastModified);
+      }
+    } catch (_error) {
+      // Try next candidate.
+    }
+  }
+  return null;
+}
+
+async function updateFooter() {
+  const lastUpdatedEl = document.getElementById("lastUpdated");
+  const nextUpdateEl = document.getElementById("nextUpdate");
+
+  const [lastUpdated] = await Promise.all([
+    fetchLastUpdated(["leaderboard.csv", "../leaderboard.csv"]),
+  ]);
+
+  const nextScheduled = getNextScheduledUtc(new Date());
+
+  if (lastUpdatedEl) {
+    lastUpdatedEl.textContent = formatUtc(lastUpdated);
+  }
+  if (nextUpdateEl) {
+    nextUpdateEl.textContent = formatUtc(nextScheduled);
+  }
+}
+
 async function loadCsv(paths) {
   const candidates = Array.isArray(paths) ? paths : [paths];
   const attempted = [];
@@ -288,6 +375,7 @@ async function loadCsv(paths) {
 
     renderOverall();
     renderRepo();
+    updateFooter();
   } catch (error) {
     const hero = document.querySelector(".hero");
     const message = document.createElement("p");

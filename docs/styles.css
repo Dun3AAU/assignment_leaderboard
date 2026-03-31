@@ -148,6 +148,41 @@ h2 {
   overflow-x: auto;
 }
 
+.footer {
+  margin-top: 1.4rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(7, 15, 24, 0.6);
+  box-shadow: var(--shadow);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.footer-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.footer-label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.footer-value {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -230,5 +265,9 @@ tbody tr:hover {
   .container {
     width: min(1180px, calc(100% - 1.2rem));
     margin-top: 1rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
   }
 }
